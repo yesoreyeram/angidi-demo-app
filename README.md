@@ -222,11 +222,11 @@ The project follows **Test-Driven Development (TDD)** and **Behavior-Driven Deve
 1. **Unit Tests** (>80% coverage)
    - Test individual components
    - Fast, isolated, deterministic
-   
+
 2. **Integration Tests** (>70% coverage)
    - Test service interactions
    - Test with real databases (test instances)
-   
+
 3. **End-to-End Tests** (Critical paths)
    - Test complete user journeys
    - Test with all services running
