@@ -1,0 +1,33 @@
+# Root level gitignore
+# See backend/.gitignore and frontend/.gitignore for specific ignores
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
+.env.local
+*.env
+
+# Temporary files
+tmp/
+*.tmp
+
+# Log files
+*.log
+
+# Build artifacts
+dist/
+build/
+
+# Coverage reports
+coverage/
+*.lcov
