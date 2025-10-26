@@ -122,23 +122,28 @@ Each phase follows a consistent structure:
 - Configure linting and formatting
 - Implement basic CI/CD with GitHub Actions
 - Establish coding standards
+- Set up E2E testing infrastructure
 
 **System Design Concepts**:
 - Project organization best practices
 - Continuous Integration fundamentals
 - Code quality automation
+- End-to-end testing strategies
 
 **Tools & Technologies**:
 - Go 1.21+, Go modules
 - React 18+, TypeScript 5+, Next.js 14+
 - golangci-lint, ESLint, Prettier
 - GitHub Actions
+- Playwright (E2E testing)
 
 **Deliverables**:
 - Go backend skeleton (`cmd/`, `internal/`, `pkg/`)
 - Next.js frontend skeleton
 - Makefile for common tasks
 - CI pipeline (build, lint, test)
+- E2E test framework with Playwright
+- Sample E2E tests for homepage and navigation
 - README with setup instructions
 
 **Documentation**: [Phase 1 Details](./phase-01-scaffolding/README.md)
