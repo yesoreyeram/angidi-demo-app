@@ -12,9 +12,10 @@ import (
 
 // Config holds all configuration for the application
 type Config struct {
-	Server  ServerConfig  `yaml:"server"`
-	Logging LoggingConfig `yaml:"logging"`
-	CORS    CORSConfig    `yaml:"cors"`
+	Server   ServerConfig   `yaml:"server"`
+	Logging  LoggingConfig  `yaml:"logging"`
+	CORS     CORSConfig     `yaml:"cors"`
+	Database DatabaseConfig `yaml:"database"`
 }
 
 // ServerConfig holds server-specific configuration
@@ -38,6 +39,20 @@ type CORSConfig struct {
 	AllowedOrigins []string `yaml:"allowed_origins"`
 	AllowedMethods []string `yaml:"allowed_methods"`
 	AllowedHeaders []string `yaml:"allowed_headers"`
+}
+
+// DatabaseConfig holds database configuration
+type DatabaseConfig struct {
+	Host            string        `yaml:"host"`
+	Port            int           `yaml:"port"`
+	User            string        `yaml:"user"`
+	Password        string        `yaml:"password"`
+	Database        string        `yaml:"database"`
+	SSLMode         string        `yaml:"sslmode"`
+	MaxConns        int32         `yaml:"max_conns"`
+	MinConns        int32         `yaml:"min_conns"`
+	MaxConnLifetime time.Duration `yaml:"max_conn_lifetime"`
+	MaxConnIdleTime time.Duration `yaml:"max_conn_idle_time"`
 }
 
 // Load loads configuration from file
@@ -107,6 +122,18 @@ func newDefaultConfig() *Config {
 			AllowedMethods: []string{"GET", "POST", "PUT", "DELETE"},
 			AllowedHeaders: []string{"Content-Type", "Authorization"},
 		},
+		Database: DatabaseConfig{
+			Host:            "localhost",
+			Port:            5432,
+			User:            "postgres",
+			Password:        "postgres",
+			Database:        "angidi_dev",
+			SSLMode:         "disable",
+			MaxConns:        25,
+			MinConns:        5,
+			MaxConnLifetime: 1 * time.Hour,
+			MaxConnIdleTime: 15 * time.Minute,
+		},
 	}
 }
 
@@ -162,5 +189,34 @@ func applyEnvOverrides(cfg *Config) error {
 	if level := os.Getenv("LOG_LEVEL"); level != "" {
 		cfg.Logging.Level = level
 	}
+	
+	// Database overrides
+	if host := os.Getenv("DB_HOST"); host != "" {
+		cfg.Database.Host = host
+	}
+	if port := os.Getenv("DB_PORT"); port != "" {
+		p, err := strconv.Atoi(port)
+		if err != nil {
+			return fmt.Errorf("invalid DB_PORT: %w", err)
+		}
+		if p > 0 && p <= 65535 {
+			cfg.Database.Port = p
+		} else {
+			return fmt.Errorf("DB_PORT out of valid range: %d", p)
+		}
+	}
+	if user := os.Getenv("DB_USER"); user != "" {
+		cfg.Database.User = user
+	}
+	if password := os.Getenv("DB_PASSWORD"); password != "" {
+		cfg.Database.Password = password
+	}
+	if database := os.Getenv("DB_NAME"); database != "" {
+		cfg.Database.Database = database
+	}
+	if sslmode := os.Getenv("DB_SSLMODE"); sslmode != "" {
+		cfg.Database.SSLMode = sslmode
+	}
+	
 	return nil
 }

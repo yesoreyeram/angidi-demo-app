@@ -1,4 +1,4 @@
-.PHONY: help build test lint fmt clean run install-tools deps test-coverage
+.PHONY: help build test lint fmt clean run install-tools deps test-coverage migrate-up migrate-down migrate-create db-setup
 
 help: ## Show this help
 	@echo "Available targets:"
@@ -7,6 +7,7 @@ help: ## Show this help
 install-tools: ## Install development tools
 	@echo "Installing development tools..."
 	@go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+	@go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
 	@echo "Tools installed successfully"
 
 deps: ## Download dependencies
@@ -56,5 +57,34 @@ clean: ## Clean build artifacts
 	@rm -rf bin/
 	@rm -f coverage.out coverage.html
 	@echo "Clean complete"
+
+# Database commands
+DB_URL ?= postgres://postgres:postgres@localhost:5432/angidi_dev?sslmode=disable
+
+migrate-up: ## Run all pending migrations
+	@echo "Running migrations..."
+	@migrate -path ./migrations -database "$(DB_URL)" up
+	@echo "Migrations complete"
+
+migrate-down: ## Rollback last migration
+	@echo "Rolling back migration..."
+	@migrate -path ./migrations -database "$(DB_URL)" down 1
+	@echo "Rollback complete"
+
+migrate-create: ## Create new migration (usage: make migrate-create NAME=migration_name)
+	@if [ -z "$(NAME)" ]; then \
+		echo "Error: NAME is required. Usage: make migrate-create NAME=migration_name"; \
+		exit 1; \
+	fi
+	@echo "Creating migration $(NAME)..."
+	@migrate create -ext sql -dir ./migrations -seq $(NAME)
+	@echo "Migration files created"
+
+db-setup: ## Setup database (create database and run migrations)
+	@echo "Setting up database..."
+	@createdb angidi_dev 2>/dev/null || echo "Database angidi_dev already exists"
+	@createdb angidi_test 2>/dev/null || echo "Database angidi_test already exists"
+	@$(MAKE) migrate-up
+	@echo "Database setup complete"
 
 .DEFAULT_GOAL := help
