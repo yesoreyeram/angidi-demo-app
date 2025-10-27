@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 📚 Documentation
+    url: https://github.com/yesoreyeram/angidi-demo-app/tree/main/docs
+    about: View project documentation and phase guides
+  - name: 💬 Discussions
+    url: https://github.com/yesoreyeram/angidi-demo-app/discussions
+    about: Ask questions and discuss ideas with the community
+  - name: 🎓 Learning Resources
+    url: https://github.com/yesoreyeram/angidi-demo-app/tree/main/docs/specs
+    about: Access learning resources and system design concepts

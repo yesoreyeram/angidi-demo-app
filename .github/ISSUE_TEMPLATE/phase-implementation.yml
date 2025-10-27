@@ -1,0 +1,216 @@
+name: Phase Implementation
+description: Track the implementation of a planned phase
+title: "[Phase X] Phase Name - Implementation"
+labels: ["phase-implementation", "in-progress"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Phase Implementation Template
+        
+        Use this template to track the implementation of a previously planned phase. Reference the planning issue in the description below.
+
+  - type: input
+    id: phase-number
+    attributes:
+      label: Phase Number
+      description: Which phase is this? (e.g., 3, 4, 5...)
+      placeholder: "3"
+    validations:
+      required: true
+
+  - type: input
+    id: phase-name
+    attributes:
+      label: Phase Name
+      description: Short descriptive name for this phase
+      placeholder: "Database Integration"
+    validations:
+      required: true
+
+  - type: input
+    id: planning-issue
+    attributes:
+      label: Planning Issue
+      description: Link to the planning issue (if exists)
+      placeholder: "#123"
+    validations:
+      required: false
+
+  - type: markdown
+    attributes:
+      value: |
+        ## Implementation Progress
+
+  - type: textarea
+    id: implementation-tasks
+    attributes:
+      label: Implementation Tasks
+      description: Break down the work into specific tasks (use checkboxes)
+      placeholder: |
+        ### Backend Tasks
+        - [ ] Setup PostgreSQL Docker container
+        - [ ] Create database schema design
+        - [ ] Implement migration system
+        - [ ] Update User repository with database
+        - [ ] Update Product repository with database
+        - [ ] Add connection pooling
+        - [ ] Write unit tests
+        - [ ] Write integration tests
+        
+        ### Frontend Tasks
+        - [ ] Update API client for new endpoints
+        - [ ] Handle loading states
+        - [ ] Update error handling
+        
+        ### Documentation Tasks
+        - [ ] Update API documentation
+        - [ ] Document database schema
+        - [ ] Update README files
+        - [ ] Create troubleshooting guide
+        
+        ### Testing & Quality
+        - [ ] All unit tests passing
+        - [ ] All integration tests passing
+        - [ ] Code coverage >80%
+        - [ ] Linters passing
+        - [ ] Security scan passing
+      value: |
+        ### Backend Tasks
+        - [ ] 
+        
+        ### Frontend Tasks
+        - [ ] 
+        
+        ### Documentation Tasks
+        - [ ] 
+        
+        ### Testing & Quality
+        - [ ] All unit tests passing
+        - [ ] All integration tests passing
+        - [ ] Code coverage >80%
+        - [ ] Linters passing
+        - [ ] Security scan passing
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: How will we verify this phase is complete?
+      placeholder: |
+        - [ ] All planned deliverables implemented
+        - [ ] Documentation updated
+        - [ ] Tests passing
+        - [ ] Code reviewed
+        - [ ] Security verified
+    validations:
+      required: true
+
+  - type: input
+    id: start-date
+    attributes:
+      label: Start Date
+      description: When did implementation start?
+      placeholder: "2025-10-27"
+    validations:
+      required: false
+
+  - type: input
+    id: target-date
+    attributes:
+      label: Target Completion Date
+      description: When do you plan to complete this phase?
+      placeholder: "2025-11-03"
+    validations:
+      required: false
+
+  - type: textarea
+    id: blockers
+    attributes:
+      label: Blockers & Issues
+      description: List any blockers or issues encountered during implementation
+      placeholder: |
+        - Waiting on dependency X
+        - Issue with tool Y
+    validations:
+      required: false
+
+  - type: textarea
+    id: progress-notes
+    attributes:
+      label: Progress Notes
+      description: Track progress, decisions made, or important notes
+      placeholder: |
+        **Week 1:**
+        - Completed database schema design
+        - Started implementing migrations
+        
+        **Week 2:**
+        - Finished User repository
+        - Started Product repository
+    validations:
+      required: false
+
+  - type: textarea
+    id: testing-status
+    attributes:
+      label: Testing Status
+      description: Current status of testing
+      placeholder: |
+        - Unit Tests: 45/50 passing (90%)
+        - Integration Tests: 8/10 passing (80%)
+        - Coverage: 85%
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: quality-gates
+    attributes:
+      label: Quality Gates
+      description: Track completion of quality requirements
+      options:
+        - label: All linters passing
+          required: false
+        - label: All tests passing
+          required: false
+        - label: Code coverage meets target (>80%)
+          required: false
+        - label: Security scan completed with no critical issues
+          required: false
+        - label: Documentation updated
+          required: false
+        - label: Code reviewed
+          required: false
+        - label: Integration tests with previous phases passing
+          required: false
+
+  - type: checkboxes
+    id: deliverables-checklist
+    attributes:
+      label: Deliverables Checklist
+      description: Track delivery of planned items
+      options:
+        - label: All code changes implemented
+          required: false
+        - label: Unit tests written and passing
+          required: false
+        - label: Integration tests written and passing
+          required: false
+        - label: API documentation updated
+          required: false
+        - label: README files updated
+          required: false
+        - label: Troubleshooting guide created
+          required: false
+        - label: Migration guide created (if applicable)
+          required: false
+
+  - type: textarea
+    id: additional-notes
+    attributes:
+      label: Additional Notes
+      description: Any other information relevant to implementation
+    validations:
+      required: false

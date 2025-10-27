@@ -1,0 +1,147 @@
+name: Documentation Improvement
+description: Suggest improvements to documentation
+title: "[Docs] "
+labels: ["documentation", "enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Documentation Improvement
+        
+        Help us improve our documentation! Suggest changes, additions, or clarifications.
+
+  - type: dropdown
+    id: doc-type
+    attributes:
+      label: Documentation Type
+      description: What type of documentation needs improvement?
+      options:
+        - README files
+        - API Documentation
+        - Phase Documentation
+        - Architecture Documentation
+        - Setup/Installation Guide
+        - Troubleshooting Guide
+        - Code Comments
+        - System Design Concepts
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: improvement-type
+    attributes:
+      label: Improvement Type
+      description: What kind of improvement is this?
+      options:
+        - Missing information
+        - Incorrect information
+        - Unclear/confusing explanation
+        - Outdated information
+        - Typo/grammar error
+        - Better examples needed
+        - Better organization needed
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: location
+    attributes:
+      label: Document Location
+      description: Which file or section needs improvement?
+      placeholder: "docs/phases/phase-02-core-services/README.md, Section: JWT Authentication"
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-content
+    attributes:
+      label: Current Content
+      description: What does the documentation currently say? (copy/paste relevant section)
+      placeholder: |
+        JWT tokens are used for authentication...
+    validations:
+      required: false
+
+  - type: textarea
+    id: issue
+    attributes:
+      label: What's the Issue?
+      description: Explain what's wrong or missing
+      placeholder: |
+        The documentation doesn't explain how to refresh expired tokens...
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed-change
+    attributes:
+      label: Proposed Change
+      description: How should we improve it?
+      placeholder: |
+        Add a section explaining the token refresh flow with example code...
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggested-content
+    attributes:
+      label: Suggested Content
+      description: If you have specific content to suggest, include it here
+      placeholder: |
+        ## Token Refresh Flow
+        
+        When an access token expires, use the refresh token to obtain a new one:
+        
+        ```bash
+        curl -X POST http://localhost:8080/api/v1/users/refresh-token \
+          -H "Content-Type: application/json" \
+          -d '{"refresh_token": "your-refresh-token"}'
+        ```
+    validations:
+      required: false
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: How important is this improvement?
+      options:
+        - High - Blocking users from understanding key concepts
+        - Medium - Would significantly improve clarity
+        - Low - Nice to have
+    validations:
+      required: true
+
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact
+      description: Who is affected by this documentation issue?
+      placeholder: |
+        - New developers setting up the project
+        - Anyone trying to implement authentication
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Any other relevant information
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Documentation Improvement Checklist
+      description: Please confirm the following
+      options:
+        - label: I have identified the specific document and section
+          required: true
+        - label: I have clearly explained the issue
+          required: true
+        - label: I have suggested how to improve it
+          required: true

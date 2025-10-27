@@ -1,0 +1,193 @@
+name: Feature Request
+description: Suggest a new feature or enhancement for the Angidi platform
+title: "[Feature] "
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Feature Request
+        
+        Thank you for suggesting a new feature! Please provide details to help us understand and evaluate your proposal.
+
+  - type: dropdown
+    id: feature-type
+    attributes:
+      label: Feature Type
+      description: What type of feature is this?
+      options:
+        - New functionality
+        - Enhancement to existing feature
+        - Performance improvement
+        - Developer experience
+        - Documentation
+        - Testing
+        - Infrastructure
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      description: Which component would this affect?
+      options:
+        - Backend - User Service
+        - Backend - Product Service
+        - Backend - API Gateway
+        - Backend - New Service
+        - Frontend - UI/Components
+        - Frontend - Pages
+        - Frontend - API Client
+        - Documentation
+        - Build/CI/CD
+        - Testing
+        - Infrastructure
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: How important is this feature?
+      options:
+        - Critical - Blocking progress
+        - High - Important for next phase
+        - Medium - Nice to have soon
+        - Low - Future consideration
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Statement
+      description: What problem does this feature solve?
+      placeholder: |
+        Currently, users cannot filter products by price range, making it difficult to find affordable items...
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed-solution
+    attributes:
+      label: Proposed Solution
+      description: How would you like to solve this problem?
+      placeholder: |
+        Add price range filter to the product catalog page with min/max price inputs...
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternative Solutions
+      description: Have you considered any alternative approaches?
+      placeholder: |
+        - Could use predefined price brackets instead of min/max inputs
+        - Could add a price slider widget
+    validations:
+      required: false
+
+  - type: textarea
+    id: user-stories
+    attributes:
+      label: User Stories
+      description: Describe the feature from a user's perspective
+      placeholder: |
+        As a customer, I want to filter products by price range
+        So that I can find items within my budget
+        
+        Acceptance Criteria:
+        - User can enter minimum price
+        - User can enter maximum price
+        - Product list updates to show only matching items
+        - Pagination resets when filter is applied
+    validations:
+      required: false
+
+  - type: textarea
+    id: implementation-notes
+    attributes:
+      label: Implementation Notes
+      description: Technical considerations or implementation ideas
+      placeholder: |
+        - Add min_price and max_price query parameters to GET /api/v1/products
+        - Update ProductFilters struct in backend
+        - Update product repository filter logic
+        - Add price filter UI components to frontend
+    validations:
+      required: false
+
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies
+      description: What features or components does this depend on?
+      placeholder: |
+        - Requires Phase 2 Product Service to be complete
+        - May need database indexes for performance
+    validations:
+      required: false
+
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact & Benefits
+      description: What are the benefits of implementing this feature?
+      placeholder: |
+        - Improves user experience for price-conscious shoppers
+        - Reduces time to find suitable products
+        - Increases conversion rate
+    validations:
+      required: false
+
+  - type: textarea
+    id: mockups
+    attributes:
+      label: Mockups or Examples
+      description: Include any mockups, wireframes, or examples
+      placeholder: |
+        [Attach screenshots or describe UI changes]
+    validations:
+      required: false
+
+  - type: dropdown
+    id: phase
+    attributes:
+      label: Suggested Phase
+      description: Which phase should this be part of?
+      options:
+        - Current Phase
+        - Next Phase
+        - Phase 3
+        - Phase 4
+        - Phase 5
+        - Future Phases
+        - Not sure
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Any other information about the feature
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Feature Request Checklist
+      description: Please confirm the following
+      options:
+        - label: I have searched existing issues to ensure this is not a duplicate
+          required: true
+        - label: I have clearly described the problem this feature solves
+          required: true
+        - label: I have provided enough detail for evaluation
+          required: true

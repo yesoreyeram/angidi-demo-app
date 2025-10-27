@@ -1,0 +1,152 @@
+name: Bug Report
+description: Report a bug or issue with the Angidi platform
+title: "[Bug] "
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Bug Report
+        
+        Thank you for reporting a bug! Please provide as much detail as possible to help us resolve the issue.
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      description: Which component is affected?
+      options:
+        - Backend - User Service
+        - Backend - Product Service
+        - Backend - API Gateway
+        - Backend - Authentication
+        - Backend - Other
+        - Frontend - UI/Components
+        - Frontend - Pages
+        - Frontend - API Client
+        - Documentation
+        - Build/CI/CD
+        - Testing
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      description: How severe is this bug?
+      options:
+        - Critical - System is unusable
+        - High - Major functionality broken
+        - Medium - Feature partially broken
+        - Low - Minor issue or cosmetic
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: Clear and concise description of what the bug is
+      placeholder: |
+        When I try to login with valid credentials, the API returns 500 error...
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to Reproduce
+      description: How can we reproduce this issue?
+      placeholder: |
+        1. Go to login page
+        2. Enter email 'user@example.com'
+        3. Enter password 'password123'
+        4. Click 'Login' button
+        5. See error message
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected Behavior
+      description: What did you expect to happen?
+      placeholder: |
+        User should be logged in and redirected to dashboard
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual-behavior
+    attributes:
+      label: Actual Behavior
+      description: What actually happened?
+      placeholder: |
+        Got 500 Internal Server Error and no redirect
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant Logs
+      description: Include any error messages, stack traces, or logs
+      placeholder: |
+        ```
+        2025-10-27T10:30:00Z ERROR user/handler.go:45 Failed to authenticate user
+        panic: runtime error: invalid memory address
+        ```
+      render: shell
+    validations:
+      required: false
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Details about your environment
+      placeholder: |
+        - OS: macOS 14.0
+        - Go version: 1.21.3
+        - Node version: 20.10.0
+        - Browser: Chrome 120.0
+        - Phase: Phase 2
+      value: |
+        - OS: 
+        - Go version: 
+        - Node version: 
+        - Browser: 
+        - Phase: 
+    validations:
+      required: false
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: If applicable, add screenshots to help explain the problem
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Any other information about the problem
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Bug Report Checklist
+      description: Please confirm the following
+      options:
+        - label: I have searched existing issues to ensure this is not a duplicate
+          required: true
+        - label: I have provided clear steps to reproduce
+          required: true
+        - label: I have included relevant logs or error messages
+          required: false
