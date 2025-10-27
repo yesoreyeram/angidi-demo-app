@@ -143,26 +143,309 @@ Returns server health status.
 **Response:**
 ```json
 {
-  "status": "healthy",
-  "timestamp": "2025-10-26T23:00:00Z"
+  "data": {
+    "status": "healthy",
+    "timestamp": "2025-10-27T03:00:00Z"
+  }
 }
 ```
 
-### Welcome
+### User Authentication
+
+#### Register User
 
 ```bash
-GET /
+POST /api/v1/users/register
 ```
 
-Returns welcome message and version.
-
-**Response:**
+**Request Body:**
 ```json
 {
-  "message": "Welcome to Angidi API",
-  "version": "0.1.0"
+  "email": "user@example.com",
+  "password": "SecurePass123!",
+  "name": "John Doe"
 }
 ```
+
+**Response (201 Created):**
+```json
+{
+  "data": {
+    "id": "uuid",
+    "email": "user@example.com",
+    "name": "John Doe",
+    "role": "user",
+    "created_at": "2025-10-27T03:00:00Z",
+    "updated_at": "2025-10-27T03:00:00Z"
+  }
+}
+```
+
+#### Login
+
+```bash
+POST /api/v1/users/login
+```
+
+**Request Body:**
+```json
+{
+  "email": "user@example.com",
+  "password": "SecurePass123!"
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "data": {
+    "access_token": "eyJhbG...",
+    "refresh_token": "eyJhbG...",
+    "expires_in": 900,
+    "user": {
+      "id": "uuid",
+      "email": "user@example.com",
+      "name": "John Doe",
+      "role": "user",
+      "created_at": "2025-10-27T03:00:00Z",
+      "updated_at": "2025-10-27T03:00:00Z"
+    }
+  }
+}
+```
+
+#### Refresh Token
+
+```bash
+POST /api/v1/users/refresh-token
+```
+
+**Request Body:**
+```json
+{
+  "refresh_token": "eyJhbG..."
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "data": {
+    "access_token": "eyJhbG...",
+    "refresh_token": "eyJhbG...",
+    "expires_in": 900,
+    "user": { ... }
+  }
+}
+```
+
+#### Get Profile (Protected)
+
+```bash
+GET /api/v1/users/me
+Authorization: Bearer <access_token>
+```
+
+**Response (200 OK):**
+```json
+{
+  "data": {
+    "id": "uuid",
+    "email": "user@example.com",
+    "name": "John Doe",
+    "role": "user",
+    "created_at": "2025-10-27T03:00:00Z",
+    "updated_at": "2025-10-27T03:00:00Z"
+  }
+}
+```
+
+#### Update Profile (Protected)
+
+```bash
+PUT /api/v1/users/me
+Authorization: Bearer <access_token>
+```
+
+**Request Body:**
+```json
+{
+  "name": "John Updated"
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "data": {
+    "id": "uuid",
+    "email": "user@example.com",
+    "name": "John Updated",
+    "role": "user",
+    "created_at": "2025-10-27T03:00:00Z",
+    "updated_at": "2025-10-27T03:30:00Z"
+  }
+}
+```
+
+### Product Management
+
+#### List Products
+
+```bash
+GET /api/v1/products?page=1&page_size=10&category_id=cat1&search=phone&min_price=100&max_price=1000
+```
+
+**Query Parameters:**
+- `page` (optional): Page number (default: 1)
+- `page_size` (optional): Items per page (default: 10, max: 100)
+- `category_id` (optional): Filter by category
+- `search` (optional): Search in name and description
+- `min_price` (optional): Minimum price filter
+- `max_price` (optional): Maximum price filter
+
+**Response (200 OK):**
+```json
+{
+  "data": {
+    "products": [
+      {
+        "id": "uuid",
+        "name": "Product Name",
+        "description": "Product description",
+        "price": 99.99,
+        "stock": 100,
+        "category_id": "cat1",
+        "image_url": "https://example.com/image.jpg",
+        "created_at": "2025-10-27T03:00:00Z",
+        "updated_at": "2025-10-27T03:00:00Z"
+      }
+    ],
+    "total_count": 50,
+    "page": 1,
+    "page_size": 10,
+    "total_pages": 5
+  }
+}
+```
+
+#### Get Product
+
+```bash
+GET /api/v1/products/:id
+```
+
+**Response (200 OK):**
+```json
+{
+  "data": {
+    "id": "uuid",
+    "name": "Product Name",
+    "description": "Product description",
+    "price": 99.99,
+    "stock": 100,
+    "category_id": "cat1",
+    "image_url": "https://example.com/image.jpg",
+    "created_at": "2025-10-27T03:00:00Z",
+    "updated_at": "2025-10-27T03:00:00Z"
+  }
+}
+```
+
+#### Create Product (Admin Only)
+
+```bash
+POST /api/v1/products
+Authorization: Bearer <access_token>
+```
+
+**Request Body:**
+```json
+{
+  "name": "New Product",
+  "description": "Product description",
+  "price": 99.99,
+  "stock": 100,
+  "category_id": "cat1",
+  "image_url": "https://example.com/image.jpg"
+}
+```
+
+**Response (201 Created):**
+```json
+{
+  "data": {
+    "id": "uuid",
+    "name": "New Product",
+    ...
+  }
+}
+```
+
+#### Update Product (Admin Only)
+
+```bash
+PUT /api/v1/products/:id
+Authorization: Bearer <access_token>
+```
+
+**Request Body:**
+```json
+{
+  "name": "Updated Product",
+  "price": 149.99
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "data": {
+    "id": "uuid",
+    "name": "Updated Product",
+    "price": 149.99,
+    ...
+  }
+}
+```
+
+#### Delete Product (Admin Only)
+
+```bash
+DELETE /api/v1/products/:id
+Authorization: Bearer <access_token>
+```
+
+**Response (204 No Content)**
+
+### Error Responses
+
+All error responses follow this format:
+
+```json
+{
+  "error": {
+    "code": "ERROR_CODE",
+    "message": "Human-readable error message",
+    "details": [
+      {
+        "field": "email",
+        "message": "Email format is invalid"
+      }
+    ],
+    "request_id": "uuid"
+  }
+}
+```
+
+**Common Error Codes:**
+- `VALIDATION_ERROR` (400): Invalid request parameters
+- `AUTHENTICATION_ERROR` (401): Invalid or missing credentials
+- `AUTHORIZATION_ERROR` (403): Insufficient permissions
+- `NOT_FOUND` (404): Resource not found
+- `CONFLICT` (409): Resource already exists
+- `INTERNAL_ERROR` (500): Server error
+- `RATE_LIMIT_EXCEEDED` (429): Too many requests
 
 ## Development Workflow
 
@@ -242,11 +525,36 @@ SERVER_PORT=9090 make run
 ## Dependencies
 
 Main dependencies:
+- `github.com/go-chi/chi/v5` - HTTP router
+- `github.com/go-chi/cors` - CORS middleware
+- `github.com/golang-jwt/jwt/v5` - JWT tokens
+- `golang.org/x/crypto` - bcrypt password hashing
+- `github.com/go-playground/validator/v10` - Request validation
+- `github.com/google/uuid` - UUID generation
+- `golang.org/x/time` - Rate limiting
 - `go.uber.org/zap` - Structured logging
 - `gopkg.in/yaml.v3` - YAML parsing
 
 Development dependencies:
+- `github.com/stretchr/testify` - Test assertions
+- `go.uber.org/mock` - Mocking
 - `golangci-lint` - Linting
+
+## Environment Variables
+
+### JWT Configuration
+
+```bash
+JWT_SECRET=your-secret-key-change-in-production
+JWT_ACCESS_TOKEN_DURATION=15m
+JWT_REFRESH_TOKEN_DURATION=168h
+```
+
+### CORS Configuration
+
+```bash
+CORS_ALLOWED_ORIGINS=http://localhost:3000,http://localhost:8080
+```
 
 ## License
 
@@ -258,6 +566,12 @@ See DEVELOPMENT.md for development guidelines and contribution process.
 
 ---
 
-**Current Phase**: Phase 1 - Repository Scaffolding  
+**Current Phase**: Phase 2 - Core Services Development  
 **Status**: ✅ Complete  
-**Last Updated**: 2025-10-26
+**Last Updated**: 2025-10-27
+
+**Features Implemented:**
+- User authentication (registration, login, JWT tokens)
+- Product CRUD operations with pagination and filters
+- API Gateway with middleware (auth, rate limiting, CORS, logging)
+- Comprehensive unit tests (>80% coverage for critical paths)
