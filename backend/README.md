@@ -119,6 +119,10 @@ Configuration is managed through YAML files in the `configs/` directory and can 
 - `SERVER_HOST` - Server host (default: localhost)
 - `SERVER_PORT` - Server port (default: 8080)
 - `LOG_LEVEL` - Log level: debug, info, warn, error (default: info)
+- `JWT_SECRET` - Secret key for JWT token signing (required in production)
+- `ADMIN_EMAIL` - Initial admin email (required for first-time setup)
+- `ADMIN_PASSWORD` - Initial admin password (required for first-time setup, min 12 characters)
+- `ADMIN_NAME` - Initial admin name (optional, defaults to "System Administrator")
 
 ### Example
 
@@ -128,7 +132,45 @@ SERVER_PORT=9090 make run
 
 # Run with debug logging
 LOG_LEVEL=debug make run
+
+# Create initial admin user on first run
+ADMIN_EMAIL=admin@example.com ADMIN_PASSWORD=SecureAdminPass123! make run
 ```
+
+## Admin Bootstrap
+
+### First-Time Setup
+
+On first startup, the system can automatically create an initial admin user if none exists. This is controlled via environment variables:
+
+```bash
+export ADMIN_EMAIL="admin@yourcompany.com"
+export ADMIN_PASSWORD="YourSecurePassword123!"
+export ADMIN_NAME="System Administrator"
+
+make run
+```
+
+**Security Requirements**:
+- Password must be at least 12 characters
+- Admin bootstrap only runs if no admin user exists
+- Password is automatically cleared from environment after bootstrap
+- For production, use secrets management (Vault, AWS Secrets Manager, etc.)
+
+**Production Deployment**:
+```bash
+# Using Docker
+docker run -e ADMIN_EMAIL=admin@company.com \
+           -e ADMIN_PASSWORD=$(vault kv get -field=password secret/admin) \
+           angidi-api:latest
+
+# Using Kubernetes
+kubectl create secret generic admin-credentials \
+  --from-literal=email=admin@company.com \
+  --from-literal=password=SecurePassword123!
+```
+
+See `docs/phases/phase-02-core-services/ADMIN_BOOTSTRAP.md` for detailed security considerations and alternative approaches.
 
 ## API Endpoints
 

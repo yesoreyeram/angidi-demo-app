@@ -65,6 +65,11 @@ func main() {
 	userService := user.NewService(userRepo, jwtService, zapLogger)
 	productService := product.NewService(productRepo, zapLogger)
 
+	// Bootstrap admin user if needed
+	if err := userService.BootstrapAdmin(context.Background()); err != nil {
+		zapLogger.Fatal("Failed to bootstrap admin user", zap.Error(err))
+	}
+
 	// Initialize handlers
 	userHandler := user.NewHandler(userService, zapLogger)
 	productHandler := product.NewHandler(productService, zapLogger)

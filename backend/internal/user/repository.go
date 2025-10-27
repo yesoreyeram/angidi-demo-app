@@ -12,6 +12,7 @@ type Repository interface {
 	FindByEmail(ctx context.Context, email string) (*User, error)
 	Update(ctx context.Context, user *User) error
 	Delete(ctx context.Context, id string) error
+	HasAdmin(ctx context.Context) (bool, error)
 }
 
 // InMemoryRepository implements Repository using in-memory storage
@@ -97,4 +98,18 @@ func (r *InMemoryRepository) Delete(ctx context.Context, id string) error {
 	delete(r.users, id)
 	delete(r.usersByEmail, user.Email)
 	return nil
+}
+
+// HasAdmin checks if any admin user exists in the repository
+func (r *InMemoryRepository) HasAdmin(ctx context.Context) (bool, error) {
+	r.mutex.RLock()
+	defer r.mutex.RUnlock()
+
+	for _, user := range r.users {
+		if user.Role == "admin" {
+			return true, nil
+		}
+	}
+
+	return false, nil
 }

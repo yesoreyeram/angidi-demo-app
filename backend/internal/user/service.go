@@ -19,6 +19,7 @@ type Service interface {
 	GetProfile(ctx context.Context, userID string) (*User, error)
 	UpdateProfile(ctx context.Context, userID string, req UpdateProfileRequest) (*User, error)
 	RefreshToken(ctx context.Context, refreshToken string) (*AuthResponse, error)
+	BootstrapAdmin(ctx context.Context) error
 }
 
 // service implements Service
