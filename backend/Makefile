@@ -38,7 +38,7 @@ test-integration: ## Run integration tests
 
 lint: ## Run linters
 	@echo "Running linters..."
-	@golangci-lint run ./...
+	@$(shell go env GOPATH)/bin/golangci-lint run ./...
 	@echo "Linting complete"
 
 fmt: ## Format code

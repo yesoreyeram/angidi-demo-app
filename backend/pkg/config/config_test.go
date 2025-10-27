@@ -47,3 +47,85 @@ func TestLoadWithEnvOverride(t *testing.T) {
 		t.Errorf("Expected log level 'debug', got: %s", cfg.Logging.Level)
 	}
 }
+
+func TestValidate(t *testing.T) {
+	tests := []struct {
+		name    string
+		config  *Config
+		wantErr bool
+	}{
+		{
+			name:    "valid config",
+			config:  newDefaultConfig(),
+			wantErr: false,
+		},
+		{
+			name: "invalid port - too low",
+			config: &Config{
+				Server: ServerConfig{
+					Port:            0,
+					ReadTimeout:     10,
+					WriteTimeout:    10,
+					ShutdownTimeout: 30,
+				},
+				Logging: LoggingConfig{Level: "info"},
+			},
+			wantErr: true,
+		},
+		{
+			name: "invalid port - too high",
+			config: &Config{
+				Server: ServerConfig{
+					Port:            70000,
+					ReadTimeout:     10,
+					WriteTimeout:    10,
+					ShutdownTimeout: 30,
+				},
+				Logging: LoggingConfig{Level: "info"},
+			},
+			wantErr: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := tt.config.Validate()
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Validate() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
+
+func TestValidateConfigPath(t *testing.T) {
+	tests := []struct {
+		name    string
+		path    string
+		wantErr bool
+	}{
+		{
+			name:    "valid relative path",
+			path:    "configs/local.yaml",
+			wantErr: false,
+		},
+		{
+			name:    "absolute path not allowed",
+			path:    "/etc/config.yaml",
+			wantErr: true,
+		},
+		{
+			name:    "parent directory reference not allowed",
+			path:    "../config.yaml",
+			wantErr: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := validateConfigPath(tt.path)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("validateConfigPath() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
