@@ -1,0 +1,159 @@
+name: Phase Planning
+description: Plan a new implementation phase for the Angidi e-commerce platform
+title: "[Phase X] Phase Name - Planning"
+labels: ["phase-planning", "documentation"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Phase Planning Template
+        
+        Use this template to plan a new implementation phase. This should be created before starting implementation work.
+
+  - type: input
+    id: phase-number
+    attributes:
+      label: Phase Number
+      description: Which phase is this? (e.g., 3, 4, 5...)
+      placeholder: "3"
+    validations:
+      required: true
+
+  - type: input
+    id: phase-name
+    attributes:
+      label: Phase Name
+      description: Short descriptive name for this phase
+      placeholder: "Database Integration"
+    validations:
+      required: true
+
+  - type: textarea
+    id: overview
+    attributes:
+      label: Phase Overview
+      description: Brief description of what this phase will accomplish
+      placeholder: |
+        This phase introduces database persistence using PostgreSQL...
+    validations:
+      required: true
+
+  - type: textarea
+    id: goals
+    attributes:
+      label: Primary Goals
+      description: List the main objectives for this phase
+      placeholder: |
+        1. Integrate PostgreSQL for persistent storage
+        2. Implement database migrations
+        3. Create repository pattern with real database
+        4. Add connection pooling
+    validations:
+      required: true
+
+  - type: textarea
+    id: system-design-concepts
+    attributes:
+      label: System Design Concepts
+      description: What system design concepts will be introduced or practiced?
+      placeholder: |
+        - Relational data modeling
+        - Database migrations
+        - Connection pooling
+        - Repository pattern
+    validations:
+      required: true
+
+  - type: textarea
+    id: technologies
+    attributes:
+      label: Tools & Technologies
+      description: New tools and technologies to be introduced
+      placeholder: |
+        - PostgreSQL 15+
+        - pgx (PostgreSQL driver)
+        - golang-migrate
+    validations:
+      required: true
+
+  - type: textarea
+    id: deliverables
+    attributes:
+      label: Deliverables
+      description: What will be delivered at the end of this phase?
+      placeholder: |
+        - Database schema for users, products, categories
+        - Migration scripts
+        - Repository implementations
+        - Integration tests with database
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: How will we know this phase is complete?
+      placeholder: |
+        - [ ] All services use database instead of in-memory storage
+        - [ ] Migrations run successfully
+        - [ ] Data persists across server restarts
+        - [ ] Integration tests pass with database
+    validations:
+      required: true
+
+  - type: input
+    id: duration
+    attributes:
+      label: Estimated Duration
+      description: How long do you estimate this phase will take?
+      placeholder: "1 week"
+    validations:
+      required: true
+
+  - type: textarea
+    id: prerequisites
+    attributes:
+      label: Prerequisites
+      description: What phases or work must be completed first?
+      placeholder: |
+        - Phase 2: Core Services must be complete
+        - Understanding of SQL and PostgreSQL
+    validations:
+      required: false
+
+  - type: textarea
+    id: risks
+    attributes:
+      label: Risks & Challenges
+      description: What potential challenges or risks do you foresee?
+      placeholder: |
+        - Learning curve for database migrations
+        - Potential performance issues with large datasets
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Any other information relevant to this phase
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Planning Checklist
+      description: Have you completed these planning steps?
+      options:
+        - label: Created or updated phase documentation in `docs/phases/`
+          required: false
+        - label: Reviewed dependencies on previous phases
+          required: false
+        - label: Identified all tools and technologies needed
+          required: false
+        - label: Estimated task breakdown and timeline
+          required: false
+        - label: Defined clear acceptance criteria
+          required: false
