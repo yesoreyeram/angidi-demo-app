@@ -21,3 +21,15 @@ cors:
   allowed_headers:
     - "Content-Type"
     - "Authorization"
+
+database:
+  host: "localhost"
+  port: 5432
+  user: "postgres"
+  password: "postgres"
+  database: "angidi_dev"
+  sslmode: "disable"
+  max_conns: 25
+  min_conns: 5
+  max_conn_lifetime: 1h
+  max_conn_idle_time: 15m

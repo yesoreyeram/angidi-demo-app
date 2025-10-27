@@ -9,10 +9,27 @@ This is the backend service for Angidi, built with Go 1.21+. It provides RESTful
 ## Prerequisites
 
 - Go 1.21 or higher
+- PostgreSQL 15+ (for data persistence)
 - Make (for build automation)
 - golangci-lint (for linting)
+- golang-migrate (for database migrations)
 
 ## Quick Start
+
+### Database Setup
+
+```bash
+# Install PostgreSQL (macOS)
+brew install postgresql@15
+brew services start postgresql@15
+
+# Create databases
+createdb angidi_dev
+createdb angidi_test
+
+# Or use the Makefile
+make db-setup
+```
 
 ### Installation
 
@@ -26,6 +43,37 @@ make install-tools
 
 # Download dependencies
 make deps
+
+# Run database migrations
+make migrate-up
+```
+
+### Environment Configuration
+
+Copy the example environment file and update values:
+
+```bash
+cp .env.example .env
+```
+
+Edit `.env` with your database credentials and other configuration:
+
+```env
+# Database Configuration
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=postgres
+DB_PASSWORD=postgres
+DB_NAME=angidi_dev
+DB_SSLMODE=disable
+
+# JWT Configuration
+JWT_SECRET=your-secret-key-change-in-production-MUST-BE-STRONG
+
+# Admin Bootstrap
+ADMIN_EMAIL=admin@example.com
+ADMIN_PASSWORD=ChangeThisSecureAdminPassword123!
+ADMIN_NAME=System Administrator
 ```
 
 ### Development
@@ -71,6 +119,22 @@ make lint
 make fmt
 ```
 
+### Database Management
+
+```bash
+# Run all pending migrations
+make migrate-up
+
+# Rollback last migration
+make migrate-down
+
+# Create new migration
+make migrate-create NAME=add_new_table
+
+# Setup database from scratch
+make db-setup
+```
+
 ## Project Structure
 
 ```
@@ -79,19 +143,25 @@ backend/
 │   └── api/              # API server entry point
 │       └── main.go
 ├── internal/             # Private application code
+│   ├── database/         # Database connection pool
 │   ├── user/             # User domain
 │   ├── product/          # Product domain
-│   ├── cart/             # Cart domain
-│   ├── order/            # Order domain
+│   ├── category/         # Category domain
+│   ├── cart/             # Cart domain (future)
+│   ├── order/            # Order domain (future)
+│   ├── gateway/          # API Gateway and routing
 │   └── common/           # Shared internal code
-│       ├── middleware/   # HTTP middleware
-│       ├── validator/    # Input validation
-│       └── errors/       # Error handling
+│       └── middleware/   # HTTP middleware
 ├── pkg/                  # Public, reusable packages
 │   ├── logger/           # Structured logging
 │   ├── config/           # Configuration management
-│   ├── database/         # Database utilities
-│   └── http/             # HTTP utilities
+│   ├── jwt/              # JWT token service
+│   └── response/         # HTTP response utilities
+├── migrations/           # Database migration files
+│   ├── 000001_create_users_table.up.sql
+│   ├── 000001_create_users_table.down.sql
+│   ├── 000002_create_categories_table.up.sql
+│   └── ...
 ├── api/                  # API specifications
 │   └── openapi/          # OpenAPI/Swagger specs
 ├── tests/                # Integration and E2E tests
@@ -119,6 +189,12 @@ Configuration is managed through YAML files in the `configs/` directory and can 
 - `SERVER_HOST` - Server host (default: localhost)
 - `SERVER_PORT` - Server port (default: 8080)
 - `LOG_LEVEL` - Log level: debug, info, warn, error (default: info)
+- `DB_HOST` - Database host (default: localhost)
+- `DB_PORT` - Database port (default: 5432)
+- `DB_USER` - Database user (default: postgres)
+- `DB_PASSWORD` - Database password (default: postgres)
+- `DB_NAME` - Database name (default: angidi_dev)
+- `DB_SSLMODE` - SSL mode: disable, require, verify-ca, verify-full (default: disable)
 - `JWT_SECRET` - Secret key for JWT token signing (required in production)
 - `ADMIN_EMAIL` - Initial admin email (required for first-time setup)
 - `ADMIN_PASSWORD` - Initial admin password (required for first-time setup, min 12 characters)

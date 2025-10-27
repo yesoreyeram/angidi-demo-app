@@ -10,6 +10,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/yesoreyeram/angidi-demo-app/backend/internal/database"
 	"github.com/yesoreyeram/angidi-demo-app/backend/internal/gateway"
 	"github.com/yesoreyeram/angidi-demo-app/backend/internal/product"
 	"github.com/yesoreyeram/angidi-demo-app/backend/internal/user"
@@ -50,6 +51,33 @@ func main() {
 		"port", cfg.Server.Port,
 	)
 
+	// Initialize database connection pool
+	dbConfig := database.Config{
+		Host:            cfg.Database.Host,
+		Port:            cfg.Database.Port,
+		User:            cfg.Database.User,
+		Password:        cfg.Database.Password,
+		Database:        cfg.Database.Database,
+		SSLMode:         cfg.Database.SSLMode,
+		MaxConns:        cfg.Database.MaxConns,
+		MinConns:        cfg.Database.MinConns,
+		MaxConnLifetime: cfg.Database.MaxConnLifetime,
+		MaxConnIdleTime: cfg.Database.MaxConnIdleTime,
+	}
+
+	ctx := context.Background()
+	pool, err := database.NewPool(ctx, dbConfig)
+	if err != nil {
+		zapLogger.Fatal("Failed to create database pool", zap.Error(err))
+	}
+	defer pool.Close()
+
+	zapLogger.Info("Database connection established",
+		zap.String("host", cfg.Database.Host),
+		zap.Int("port", cfg.Database.Port),
+		zap.String("database", cfg.Database.Database),
+	)
+
 	// Initialize services
 	jwtService := jwtPkg.NewService(
 		getEnv("JWT_SECRET", "your-secret-key-change-in-production"),
@@ -57,9 +85,9 @@ func main() {
 		7*24*time.Hour,  // refresh token duration
 	)
 
-	// Initialize repositories
-	userRepo := user.NewInMemoryRepository()
-	productRepo := product.NewInMemoryRepository()
+	// Initialize repositories (using PostgreSQL)
+	userRepo := user.NewPostgresRepository(pool)
+	productRepo := product.NewPostgresRepository(pool)
 
 	// Initialize services
 	userService := user.NewService(userRepo, jwtService, zapLogger)
