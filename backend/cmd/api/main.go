@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -11,23 +10,16 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/yesoreyeram/angidi-demo-app/backend/internal/gateway"
+	"github.com/yesoreyeram/angidi-demo-app/backend/internal/product"
+	"github.com/yesoreyeram/angidi-demo-app/backend/internal/user"
 	"github.com/yesoreyeram/angidi-demo-app/backend/pkg/config"
+	jwtPkg "github.com/yesoreyeram/angidi-demo-app/backend/pkg/jwt"
 	"github.com/yesoreyeram/angidi-demo-app/backend/pkg/logger"
+	"go.uber.org/zap"
 )
 
-const version = "0.1.0"
-
-// HealthResponse represents the health check response
-type HealthResponse struct {
-	Status    string `json:"status"`
-	Timestamp string `json:"timestamp"`
-}
-
-// WelcomeResponse represents the welcome message response
-type WelcomeResponse struct {
-	Message string `json:"message"`
-	Version string `json:"version"`
-}
+const version = "0.2.0"
 
 func main() {
 	// Load configuration
@@ -47,22 +39,48 @@ func main() {
 		}
 	}()
 
+	zapLogger, err := zap.NewProduction()
+	if err != nil {
+		log.Fatalf("Failed to initialize zap logger: %v", err)
+	}
+	defer zapLogger.Sync()
+
 	appLogger.Info("Starting Angidi API server",
 		"version", version,
 		"port", cfg.Server.Port,
 	)
 
-	// Setup HTTP server with dependency injection
-	handler := newHandler(appLogger)
-	mux := http.NewServeMux()
+	// Initialize services
+	jwtService := jwtPkg.NewService(
+		getEnv("JWT_SECRET", "your-secret-key-change-in-production"),
+		15*time.Minute,  // access token duration
+		7*24*time.Hour,  // refresh token duration
+	)
 
-	// Register endpoints
-	mux.HandleFunc("/health", handler.healthCheckHandler)
-	mux.HandleFunc("/", handler.welcomeHandler)
+	// Initialize repositories
+	userRepo := user.NewInMemoryRepository()
+	productRepo := product.NewInMemoryRepository()
 
+	// Initialize services
+	userService := user.NewService(userRepo, jwtService, zapLogger)
+	productService := product.NewService(productRepo, zapLogger)
+
+	// Bootstrap admin user if needed
+	if err := userService.BootstrapAdmin(context.Background()); err != nil {
+		zapLogger.Fatal("Failed to bootstrap admin user", zap.Error(err))
+	}
+
+	// Initialize handlers
+	userHandler := user.NewHandler(userService, zapLogger)
+	productHandler := product.NewHandler(productService, zapLogger)
+
+	// Setup router
+	router := gateway.Router(userHandler, productHandler, jwtService, zapLogger)
+
+	// Setup HTTP server
 	server := &http.Server{
 		Addr:         fmt.Sprintf("%s:%d", cfg.Server.Host, cfg.Server.Port),
-		Handler:      mux,
+		Handler:      router,
 		ReadTimeout:  cfg.Server.ReadTimeout,
 		WriteTimeout: cfg.Server.WriteTimeout,
 	}
@@ -71,6 +89,10 @@ func main() {
 	serverErrors := make(chan error, 1)
 	go func() {
 		appLogger.Info("Server listening", "address", server.Addr)
+		zapLogger.Info("API Gateway ready",
+			zap.String("address", server.Addr),
+			zap.String("version", version),
+		)
 		serverErrors <- server.ListenAndServe()
 	}()
 
@@ -82,10 +104,12 @@ func main() {
 	case err := <-serverErrors:
 		if err != nil && err != http.ErrServerClosed {
 			appLogger.Error("Server failed", "error", err)
+			zapLogger.Error("Server failed", zap.Error(err))
 			os.Exit(1)
 		}
 	case <-quit:
 		appLogger.Info("Shutting down server...")
+		zapLogger.Info("Shutting down server...")
 
 		// Graceful shutdown
 		ctx, cancel := context.WithTimeout(context.Background(), cfg.Server.ShutdownTimeout)
@@ -93,51 +117,20 @@ func main() {
 
 		if err := server.Shutdown(ctx); err != nil {
 			appLogger.Error("Server forced to shutdown", "error", err)
+			zapLogger.Error("Server forced to shutdown", zap.Error(err))
 			os.Exit(1)
 		}
 
 		appLogger.Info("Server exited")
+		zapLogger.Info("Server exited")
 	}
 }
 
-// handler holds dependencies for HTTP handlers
-type handler struct {
-	logger *logger.Logger
-}
-
-// newHandler creates a new handler with dependencies
-func newHandler(l *logger.Logger) *handler {
-	return &handler{
-		logger: l,
+// getEnv retrieves an environment variable or returns a default value
+func getEnv(key, defaultValue string) string {
+	value := os.Getenv(key)
+	if value == "" {
+		return defaultValue
 	}
-}
-
-// healthCheckHandler handles health check requests
-func (h *handler) healthCheckHandler(w http.ResponseWriter, r *http.Request) {
-	response := HealthResponse{
-		Status:    "healthy",
-		Timestamp: time.Now().Format(time.RFC3339),
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-
-	if err := json.NewEncoder(w).Encode(response); err != nil {
-		h.logger.Error("Failed to encode health response", "error", err)
-	}
-}
-
-// welcomeHandler handles welcome requests
-func (h *handler) welcomeHandler(w http.ResponseWriter, r *http.Request) {
-	response := WelcomeResponse{
-		Message: "Welcome to Angidi API",
-		Version: version,
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-
-	if err := json.NewEncoder(w).Encode(response); err != nil {
-		h.logger.Error("Failed to encode welcome response", "error", err)
-	}
+	return value
 }
