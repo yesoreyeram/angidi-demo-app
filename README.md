@@ -101,7 +101,7 @@ The project is divided into 16 phases, each introducing 1-2 new tools/concepts:
 | Phase | Name | Focus | Key Technologies |
 |-------|------|-------|------------------|
 | **0** | ✅ Planning & Specification | Requirements & Design | Markdown, Diagrams |
-| **1** | ⏳ Repository Scaffolding | Project Setup | Go, React, GitHub Actions |
+| **1** | ✅ Repository Scaffolding | Project Setup | Go, React, GitHub Actions |
 | **2** | ⏳ Core Services | User & Product Services | Chi/Gin, JWT |
 | **3** | ⏳ Database Integration | Data Persistence | PostgreSQL |
 | **4** | ⏳ Containerization | Docker Packaging | Docker, Compose |
@@ -118,8 +118,8 @@ The project is divided into 16 phases, each introducing 1-2 new tools/concepts:
 | **15** | ⏳ Performance Tuning | Optimization | CDN, Sharding |
 | **16** | ⏳ Chaos Engineering | Resilience Testing | Chaos Mesh |
 
-**Current Status**: Phase 0 Complete ✅  
-**Next Phase**: Phase 1 - Repository Scaffolding ⏳
+**Current Status**: Phase 1 Complete ✅  
+**Next Phase**: Phase 2 - Core Services ⏳
 
 See [detailed phase documentation](./docs/phases/README.md) for more information.
 
@@ -232,10 +232,10 @@ See [System Design Concepts](./docs/specs/SYSTEM_DESIGN_CONCEPTS.md) for detaile
 ### Prerequisites
 - Go 1.21+
 - Node.js 20 LTS
-- Docker 24+
+- Docker 24+ (for later phases)
 - Kubernetes 1.28+ (for later phases)
 
-### Phase 1: Repository Setup (Coming Soon)
+### Phase 1: Repository Setup ✅
 
 ```bash
 # Clone the repository
@@ -244,16 +244,22 @@ cd angidi-demo-app
 
 # Backend setup
 cd backend
-go mod download
+make install-tools
+make deps
+make build
 make test
+make run  # Starts on http://localhost:8080
 
-# Frontend setup
-cd frontend
+# In a new terminal - Frontend setup
+cd ../frontend
 npm install
-npm run dev
+npm run build
+npm run dev  # Starts on http://localhost:3000
 ```
 
-Detailed setup instructions will be added in Phase 1.
+For detailed setup instructions, see:
+- [Backend README](./backend/README.md)
+- [Frontend README](./frontend/README.md)
 
 ---
 
@@ -330,6 +336,6 @@ This project is an educational initiative to learn and practice advanced system 
 
 ---
 
-**Current Phase**: 0 - Planning & Specification ✅  
-**Progress**: 6% (1/17 phases complete)  
+**Current Phase**: 1 - Repository Scaffolding ✅  
+**Progress**: 12% (2/17 phases complete)  
 **Last Updated**: 2025-10-26
